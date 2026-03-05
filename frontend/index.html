@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Art Restore AI</title>
+</head>
+
+<body>
+
+    <h2>Upload Image</h2>
+
+    <input type="file" id="fileInput">
+    <button onclick="uploadImage()">Upload</button>
+
+    <p id="result"></p>
+
+    <h3>Upload History</h3>
+    <button onclick="loadHistory()">Load History</button>
+
+    <ul id="history"></ul>
+
+    <script>
+
+        async function uploadImage() {
+
+            const fileInput = document.getElementById("fileInput");
+            const file = fileInput.files[0];
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await fetch("http://127.0.0.1:8000/upload/", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            document.getElementById("result").innerText =
+                "Uploaded: " + data.filename;
+        }
+
+
+        async function loadHistory() {
+
+            const response = await fetch("http://127.0.0.1:8000/history/");
+            const data = await response.json();
+
+            const historyList = document.getElementById("history");
+            historyList.innerHTML = "";
+
+            data.forEach(item => {
+
+                const li = document.createElement("li");
+                li.textContent = item[1];
+
+                historyList.appendChild(li);
+
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>
